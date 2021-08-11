@@ -83,6 +83,8 @@ int main()
     std::vector<double> nowState{ini_x[0], ini_y[0], M_PI/2, 0, 0}; //[x, y, yaw, vel, yaw_vel]
     std::vector<std::vector<double>> ob;
     std::vector<double> ob_x, ob_y;
+    std::vector<std::vector<double>> ini_move_ob{{5,15},{25,25},{40,50},{15,30}};
+    std::vector<std::vector<double>> move_ob;
     double linearVel = 0;
     double yawVel = 0;
     std::vector<std::vector<double>> trajectory;
@@ -94,9 +96,11 @@ int main()
     obstract_line(ob, 15, 15, 0, 25);
     obstract_line(ob, 35, 35, 15, 40);
     obstract_line(ob, 10, 27, 40, 30);
+    move_ob = ini_move_ob;
 
     ctr::DWA dwa;
 
+    int step = 0;
     while(sqrt(pow(goal[0]-nowState[0], 2) + pow(goal[0]-nowState[0], 2)) > goalR)
     {
         dwa.dwa_controll(nowState, goal, ob);
@@ -104,21 +108,39 @@ int main()
 
         nowState = motion(nowState, linearVel, yawVel);
 
+        move_ob[0][0] = ini_move_ob[0][0] + 10*abs(sin(step*M_PI/180));
+        move_ob[0][1] = ini_move_ob[0][1];
+        move_ob[1][0] = ini_move_ob[1][0];
+        move_ob[1][1] = ini_move_ob[1][1] + 25*abs(sin(step*M_PI/180));
+        move_ob[2][0] = ini_move_ob[2][0];
+        move_ob[2][1] = ini_move_ob[2][1] - 15*abs(sin(step*M_PI/180));
+        move_ob[3][0] = ini_move_ob[3][0] - 10*abs(sin(step*M_PI/180));
+        move_ob[3][1] = ini_move_ob[3][1];
+
+        //clear move_ob from ob
+        for(int i = 0; i < move_ob.size(); i++){
+            ob.pop_back();
+        }
+        for(int i = 0; i < move_ob.size(); i++){
+            ob.push_back(move_ob[i]);
+        }
+        
+        ob_x.clear();
+        ob_y.clear();
+        for(int i=0; i<ob.size(); i++){
+            ob_x.push_back(ob[i][0]);
+            ob_y.push_back(ob[i][1]);
+        }
+
         // Clear previous plot
         plt::clf();
-        // Plot line from given x and y data. Color is selected automatically.
+        plt::scatter(ob_x, ob_y); //obstract
         plt::plot(goal_x, goal_y, "xb"); //goal
         plt::plot(ini_x, ini_y, "xb"); //start
         plot_robot(nowState[0], nowState[1]); //robot
         plot_trajectory(trajectory); //path
 
-        for(int i=0; i<ob.size(); i++){
-            ob_x.push_back(ob[i][0]);
-            ob_y.push_back(ob[i][1]);
-        }
-        plt::scatter(ob_x, ob_y);
-
-        // Set x-axis to interval [0,1000000]
+        // Set x-axis to interval [0,n]
         plt::xlim(-10, n+10);
         plt::ylim(-10, n+10);
 
@@ -126,5 +148,6 @@ int main()
         plt::title("Dynamic Window Aprroach");
         // Display plot continuously
         plt::pause(0.001);
+        step +=3;
     }
 }

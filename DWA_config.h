@@ -12,8 +12,8 @@ namespace DWA_config{
     const double w_resolution = 1 * M_PI/180;
     const double dt = 0.3;
     const double predictTime = 3.0;
-    const double goalScore_gain = 0.1;
-    const double obstacleScore_gain = 0.2;
+    const double goalScore_gain = 0.15;
+    const double obstacleScore_gain = 0.5;
     const double speedScore_gain = 0.2;
     const double robot_stuck_value = 0.001;
     const double robot_radius = 1.0;
