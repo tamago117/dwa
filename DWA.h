@@ -129,10 +129,10 @@ std::vector<double> DWA::calc_dynamicWindow()
                            state.yawVel - maxYawVel_rate*dt,
                            state.yawVel + maxYawVel_rate*dt};
 
-    std::vector<double> dw{std::max(vs[0], vs[0]),
-                           std::min(vs[1], vs[1]),
-                           std::max(vs[2], vs[2]),
-                           std::min(vs[3], vs[3])};
+    std::vector<double> dw{std::max(vs[0], vd[0]),
+                           std::min(vs[1], vd[1]),
+                           std::max(vs[2], vd[2]),
+                           std::min(vs[3], vd[3])};
 
     return dw;
 }
@@ -187,7 +187,7 @@ void DWA::calc_controll_and_trajectory(std::vector<double> dw)
 
             //if robot stuck, avoid stuck by big turn
             if(bestLinearVel < robot_stuck_value && state.vel < robot_stuck_value){
-                bestAngularVel = maxYawVel_rate;
+                bestAngularVel = maxYawVel_rate/2;
             }
         }
     }
@@ -257,7 +257,11 @@ double DWA::obstacleScore(const std::vector<std::vector<double>>& trajectory)
         }
     }
 
-    return minR;
+    if(minR < 1){
+        return -INFINITY;
+    }else{
+        return minR;
+    }
 }
 
 double DWA::speedScore(const std::vector<std::vector<double>>& trajectory)

@@ -75,15 +75,15 @@ int main()
 {
     const int n = 50;
     const double goalR = 2;
-    std::vector<double> goal_x{45};
-    std::vector<double> goal_y{45};
+    std::vector<double> goal_x{42};
+    std::vector<double> goal_y{40};
     std::vector<double> goal{goal_x[0], goal_y[0]};
     std::vector<double> ini_x{5};
     std::vector<double> ini_y{5};
     std::vector<double> nowState{ini_x[0], ini_y[0], M_PI/2, 0, 0}; //[x, y, yaw, vel, yaw_vel]
     std::vector<std::vector<double>> ob;
     std::vector<double> ob_x, ob_y;
-    std::vector<std::vector<double>> ini_move_ob{{5,15},{25,25},{40,50},{15,30}};
+    std::vector<std::vector<double>> ini_move_ob{{5,15},{25,25},{35,50},{15,30}};
     std::vector<std::vector<double>> move_ob;
     double linearVel = 0;
     double yawVel = 0;
@@ -101,7 +101,7 @@ int main()
     ctr::DWA dwa;
 
     int step = 0;
-    while(sqrt(pow(goal[0]-nowState[0], 2) + pow(goal[0]-nowState[0], 2)) > goalR)
+    while(sqrt(pow(goal[0]-nowState[0], 2) + pow(goal[1]-nowState[1], 2)) > goalR)
     {
         dwa.dwa_controll(nowState, goal, ob);
         dwa.get_result(linearVel, yawVel, trajectory);
@@ -111,7 +111,7 @@ int main()
         move_ob[0][0] = ini_move_ob[0][0] + 10*abs(sin(step*M_PI/180));
         move_ob[0][1] = ini_move_ob[0][1];
         move_ob[1][0] = ini_move_ob[1][0];
-        move_ob[1][1] = ini_move_ob[1][1] + 25*abs(sin(step*M_PI/180));
+        move_ob[1][1] = ini_move_ob[1][1] + 15*abs(sin(step*M_PI/180));
         move_ob[2][0] = ini_move_ob[2][0];
         move_ob[2][1] = ini_move_ob[2][1] - 15*abs(sin(step*M_PI/180));
         move_ob[3][0] = ini_move_ob[3][0] - 10*abs(sin(step*M_PI/180));
@@ -148,6 +148,6 @@ int main()
         plt::title("Dynamic Window Aprroach");
         // Display plot continuously
         plt::pause(0.001);
-        step +=3;
+        step +=2;
     }
 }
