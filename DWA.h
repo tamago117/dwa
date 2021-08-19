@@ -155,6 +155,9 @@ void DWA::calc_controll_and_trajectory(std::vector<double> dw)
         for(double w = dw[2]; w <= dw[3]; w += w_resolution){
             trajectory = predict_trajectory(v, w);
 
+            if(goalScore(trajectory) == -INFINITY){
+                break;
+            }
             tmp_array[0] = v;
             tmp_array[1] = w;
             velocity_com.push_back(tmp_array);
