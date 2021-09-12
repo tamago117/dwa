@@ -2,8 +2,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <vector>
-#include "matplotlibcpp.h"
-#include "DWA.h"
+#include "include/matplotlibcpp.h"
+#include "include/DWA.h"
 
 namespace plt = matplotlibcpp;
 
